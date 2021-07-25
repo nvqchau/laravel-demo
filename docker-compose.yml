@@ -1,0 +1,49 @@
+version: "3"
+services: 
+  web:
+    image: webdevops/php-apache-dev:8.0
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      WEB_ALIAS_DOMAIN: laravel.docker.localhost
+      WEB_DOCUMENT_ROOT: /app/public
+      PHP_DATE_TIMEZONE: UTC
+      PHP_DISPLAY_ERRORS: 1
+      PHP_MEMORY_LIMIT: 2048M
+      PHP_MAX_EXECUTION_TIME: 300
+      PHP_POST_MAX_SIZE: 256M
+      PHP_UPLOAD_MAX_FILESIZE: 128M
+      COMPOSER_VERSION: 2
+    volumes:
+      - ./app:/app
+    networks:
+      - web-network
+      - db-network
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: laravel
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db-postgres:/var/lib/postgresql/data
+    networks:
+      - db-network
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8080:80"
+    networks:
+      - db-network
+volumes:
+  db-postgres:
+networks: 
+  web-network:
+  db-network:
