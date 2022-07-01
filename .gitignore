@@ -1,4 +1,4 @@
-/app/*
+#/app/*
 .env
 .env.backup
 .phpunit.result.cache
